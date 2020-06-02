@@ -1,6 +1,7 @@
 import random
 
-from .base import Agent
+from dlgo.agent import Agent
+from dlgo.scoring import GameResult
 
 __all__ = [
     'DepthPrunedAgent',
@@ -8,6 +9,15 @@ __all__ = [
 
 MAX_SCORE = 999999
 MIN_SCORE = -999999
+
+
+def reverse_game_result(game_result):
+    if game_result == GameResult.loss:
+        return game_result.win
+    if game_result == GameResult.win:
+        return game_result.loss
+    return GameResult.draw
+
 
 # tag::depth-prune[]
 def best_result(game_state, max_depth, eval_fn):

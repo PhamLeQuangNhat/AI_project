@@ -1,10 +1,9 @@
 import math
 import random
 
-from dlgo.base import Agent
+from dlgo import agent
 from dlgo.gotypes import Player
 from dlgo.utils import coords_from_point
-from dlgo.naive_fast import FastRandomBot
 
 __all__ = [
     'MCTSAgent',
@@ -85,9 +84,9 @@ class MCTSNode(object):
 # end::mcts-readers[]
 
 
-class MCTSAgent(Agent):
+class MCTSAgent(agent.Agent):
     def __init__(self, num_rounds, temperature):
-        Agent.__init__(self)
+        agent.Agent.__init__(self)
         self.num_rounds = num_rounds
         self.temperature = temperature
 
@@ -163,11 +162,10 @@ class MCTSAgent(Agent):
     @staticmethod
     def simulate_random_game(game):
         bots = {
-            Player.black: FastRandomBot(),
-            Player.white: FastRandomBot(),
+            Player.black: agent.FastRandomBot(),
+            Player.white: agent.FastRandomBot(),
         }
         while not game.is_over():
             bot_move = bots[game.next_player].select_move(game)
             game = game.apply_move(bot_move)
         return game.winner()
-

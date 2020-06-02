@@ -1,9 +1,9 @@
 import numpy as np
 
-from .base import Agent
-from .helpers import is_point_an_eye
-from .goboard import Move
-from .gotypes import Point
+from dlgo.agent.base import Agent
+from dlgo.agent.helpers import is_point_an_eye
+from dlgo.goboard import Move
+from dlgo.gotypes import Point
 
 
 __all__ = ['FastRandomBot']
@@ -39,4 +39,3 @@ class FastRandomBot(Agent):
                                         game_state.next_player):
                 return Move.play(p)
         return Move.pass_turn()
-

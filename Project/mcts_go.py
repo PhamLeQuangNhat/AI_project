@@ -1,11 +1,11 @@
 from six.moves import input
 
-from dlgo import goboard
+from dlgo import goboard_fast as goboard
 from dlgo import gotypes
 from dlgo import mcts
 from dlgo.utils import print_board, print_move, point_from_coords
 
-BOARD_SIZE = 9
+BOARD_SIZE = 5
 
 
 # tag::naive-board-heuristic[]

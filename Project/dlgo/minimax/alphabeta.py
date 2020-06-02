@@ -1,6 +1,6 @@
 import random
 
-from dlgo.base import Agent
+from dlgo.agent import Agent
 from dlgo.gotypes import Player
 
 __all__ = [

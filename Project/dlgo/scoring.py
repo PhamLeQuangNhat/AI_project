@@ -1,6 +1,8 @@
+# tag::scoring_imports[]
+from __future__ import absolute_import
 from collections import namedtuple
 
-from .gotypes import Player, Point
+from dlgo.gotypes import Player, Point
 # end::scoring_imports[]
 
 
@@ -54,6 +56,7 @@ class GameResult(namedtuple('GameResult', 'b w komi')):
 
 """ evaluate_territory:
 Map a board into territory and dame.
+
 Any points that are completely surrounded by a single color are
 counted as territory; it makes no attempt to identify even
 trivially dead groups.
@@ -92,6 +95,7 @@ def evaluate_territory(board):
 
 
 """ _collect_region:
+
 Find the contiguous section of a board containing a point. Also
 identify all the boundary points.
 """
