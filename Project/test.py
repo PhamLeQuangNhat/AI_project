@@ -2,7 +2,6 @@ from dlgo.agent.predict import DeepLearningAgent, load_prediction_agent
 from dlgo.data.parallel_processor import GoDataProcessor
 from dlgo.encoders.sevenplane import SevenPlaneEncoder
 from keras.optimizers import SGD
-#from dlgo.httpfrontend import get_web_app
 from dlgo.networks import cnn
 import h5py
 
@@ -18,11 +17,12 @@ opt = SGD(lr=0.005)
 model = cnn.Model.build(go_board_rows, go_board_cols,encoder.num_planes,nb_classes)
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-model.fit(X, y, batch_size=128, epochs=20, verbose=1)
+model.fit(X, y, batch_size=128, epochs=100, verbose=1)
 
 deep_learning_bot = DeepLearningAgent(model, encoder)
-with h5py.File('./agents/deep_bot.h5', 'w') as outf:
+with h5py.File('H5PY/deep_bot.h5', 'w') as outf:
     deep_learning_bot.serialize(outf)
+
 
 
 
