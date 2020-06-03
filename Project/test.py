@@ -1,13 +1,11 @@
-import h5py
-
-from keras.models import Sequential
-from keras.layers import Dense
-
 from dlgo.agent.predict import DeepLearningAgent, load_prediction_agent
-from dlgo.datapreprocessing.parallel_processor import GoDataProcessor
+from dlgo.data.parallel_processor import GoDataProcessor
 from dlgo.encoders.sevenplane import SevenPlaneEncoder
+from keras.optimizers import SGD
 #from dlgo.httpfrontend import get_web_app
 from dlgo.networks import cnn
+import h5py
+
 
 go_board_rows, go_board_cols = 19, 19
 nb_classes = go_board_rows * go_board_cols
@@ -16,18 +14,14 @@ processor = GoDataProcessor(encoder=encoder.name())
 
 X, y = processor.load_go_data(num_samples=100)
 
-input_shape = (encoder.num_planes, go_board_rows, go_board_cols)
-model = Sequential()
-network_layers = cnn.layers(input_shape)
-for layer in network_layers:
-    model.add(layer)
-model.add(Dense(nb_classes, activation='softmax'))
+opt = SGD(lr=0.005)
+model = cnn.Model.build(go_board_rows, go_board_cols,encoder.num_planes,nb_classes)
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 model.fit(X, y, batch_size=128, epochs=20, verbose=1)
 
 deep_learning_bot = DeepLearningAgent(model, encoder)
-with h5py.File('./agent/deep_bot.h5', 'w') as outf:
+with h5py.File('./agents/deep_bot.h5', 'w') as outf:
     deep_learning_bot.serialize(outf)
 
 
@@ -46,7 +40,7 @@ with h5py.File('./agent/deep_bot.h5', 'w') as outf:
 
 
 
-
+"""
 
 from dlgo.data.parallel_processor import GoDataProcessor
 from dlgo.encoders.oneplane import OnePlaneEncoder
@@ -85,3 +79,4 @@ model.fit_generator(generator=generator.generate(batch_size, num_classes),
 model.evaluate_generator(
 generator=test_generator.generate(batch_size, num_classes),
 steps=test_generator.get_num_samples() / batch_size)
+"""
