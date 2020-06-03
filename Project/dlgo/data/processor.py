@@ -17,8 +17,8 @@ from dlgo.goboard import Board, GameState, Move
 from dlgo.gotypes import Player, Point
 from dlgo.encoders.base import get_encoder_by_name
 
-from dlgo.datapreprocessing.index_processor import KGSIndex
-from dlgo.datapreprocessing.sampling import Sampler  # <1>
+from dlgo.data.index_processor import KGSIndex
+from dlgo.data.sampling import Sampler  # <1>
 # <1> Sampler will be used to sample training and test data from files.
 # end::dlgo_imports[]
 

@@ -5,7 +5,7 @@ from __future__ import print_function
 from __future__ import absolute_import
 import os
 import random
-from dlgo.datapreprocessing.index_processor import KGSIndex
+from dlgo.data.index_processor import KGSIndex
 from six.moves import range
 
 

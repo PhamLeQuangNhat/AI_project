@@ -14,9 +14,9 @@ from keras.utils import to_categorical
 from dlgo.gosgf import Sgf_game
 from dlgo.goboard import Board, GameState, Move
 from dlgo.gotypes import Player, Point
-from dlgo.datapreprocessing.index_processor import KGSIndex
-from dlgo.datapreprocessing.sampling import Sampler
-from dlgo.datapreprocessing.generator import DataGenerator
+from dlgo.data.index_processor import KGSIndex
+from dlgo.data.sampling import Sampler
+from dlgo.data.generator import DataGenerator
 from dlgo.encoders.base import get_encoder_by_name
 
 
