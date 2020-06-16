@@ -7,7 +7,7 @@ from keras.layers.core import Dense
 
 class Model:
     @staticmethod
-    def build(width, height, depth, classes):
+    def build( depth,width, height, classes):
         # initialize model
         model = Sequential()
         inputShape = (depth, height, width)
