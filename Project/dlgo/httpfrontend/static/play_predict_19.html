@@ -161,6 +161,8 @@ function applyMove(player, coord) {
         node.setMark(play.ko, JGO.MARK.CIRCLE); // mark ko, too
       ko = play.ko;
     } else alert('Illegal move: ' + play.errorMsg);
+
+    return play.success
 }
 
 function waitForBot() {
