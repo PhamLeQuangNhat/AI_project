@@ -1,1 +1,1 @@
-# AI_pacmanp.project
+# Projects belong to Artificial Intelligence
