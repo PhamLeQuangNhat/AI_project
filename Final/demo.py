@@ -4,8 +4,9 @@ from dlgo import goboard
 from dlgo import gotypes
 from dlgo import minimax
 from dlgo.utils import print_board, print_move, point_from_coords
+from dlgo import mcts
+from dlgo.httpfrontend.server import get_web_app
 
-BOARD_SIZE = 9
 def capture_diff(game_state):
     black_stones = 0
     white_stones = 0
@@ -49,7 +50,7 @@ def main():
     choices_B =     input("                         Choose type bot: ")
     print("                                                                  ")
     print("            *****************************************             ")
-
+    BOARD_SIZE = 9
     game = goboard.GameState.new_game(BOARD_SIZE)
 
     if choices_A == 1:
@@ -58,11 +59,11 @@ def main():
         if choices_B == 'b':
             bot = minimax.DepthPrunedAgent(4, capture_diff)
         if choices_B == 'c':
-            fix = 'loading'
+            bot = mcts.MCTSAgent(500, temperature=1.4)
         if choices_B == 'd':
             bots = {
                 gotypes.Player.black: minimax.AlphaBetaAgent(4, capture_diff),
-                gotypes.Player.white: minimax.DepthPrunedAgent(4, capture_diff),
+                gotypes.Player.white: mcts.MCTSAgent(500, temperature=1.4),
             }
             while not game.is_over():
                 time.sleep(0.3)    
@@ -82,6 +83,11 @@ def main():
                     move = bot.select_move(game)
                 print_move(game.next_player, move)
                 game = game.apply_move(move)
+    else:
+        if choices_B == 'a':
+            bot = mcts.MCTSAgent(700, temperature=1.4)
+            web_app = get_web_app({'mcts':bot})
+            web_app.run()
 
 if __name__ == '__main__':
     main()
