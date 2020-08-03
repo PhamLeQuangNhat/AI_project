@@ -34,27 +34,29 @@ class GoDataProcessor:
         self.encoder = get_encoder_by_name(encoder, 19)
         self.data_dir = data_directory
 
-# tag::load_generator[]
+    # data_type, co the chon 1 trong 2 loai train or test
+    # num_samples de cap toi so luong games de download data
     def load_go_data(self, data_type='train', num_samples=1000,
                      use_generator=False):
+	# Khoi tao KGSIndex()
         index = KGSIndex(data_directory=self.data_dir)
+	# Download tat ca games tu KGS toi thu muc data_directory. Neu data co san, khong can download mot lan nua
         index.download_files()
 
         sampler = Sampler(data_dir=self.data_dir)
+	# Sample chon so luong games cu the cho data_type 
         data = sampler.draw_data(data_type, num_samples)
-
-        self.map_to_workers(data_type, data)  # <1>
+	
+	# Map workload to CPUs
+        self.map_to_workers(data_type, data) 
         if use_generator:
             generator = DataGenerator(self.data_dir, data)
-            return generator  # <2>
+	    # Tra ve Go data generator
+            return generator 
         else:
             features_and_labels = self.consolidate_games(data_type, data)
-            return features_and_labels  # <3>
-
-# <1> Map workload to CPUs
-# <2> Either return a Go data generator...
-# <3> ... or return consolidated data as before.
-# end::load_generator[]
+	    # Tra ve features va labels
+            return features_and_labels 
 
     def unzip_data(self, zip_file_name):
         this_gz = gzip.open(self.data_dir + '/' + zip_file_name)
@@ -70,6 +72,7 @@ class GoDataProcessor:
         tar_file = self.unzip_data(zip_file_name)
         zip_file = tarfile.open(self.data_dir + '/' + tar_file)
         name_list = zip_file.getnames()
+	# Xac dinh tong so luong nuoc di trong tat ca games trong file zip 
         total_examples = self.num_total_examples(zip_file, game_list, name_list)
 
         shape = self.encoder.shape()
@@ -83,14 +86,16 @@ class GoDataProcessor:
             if not name.endswith('.sgf'):
                 raise ValueError(name + ' is not a valid sgf')
             sgf_content = zip_file.extractfile(name).read()
+	    # Doc noi dung SGF duoi dang chuoi ,sau khi giai nen tep zip  
             sgf = Sgf_game.from_string(sgf_content)
-
+	    # Suy ra trang thai tro choi ban dau bang cach ap dung tat ca cac vien da handicap
             game_state, first_move_done = self.get_handicap(sgf)
-
+	    # Lap lai tat ca cac di chuyen trong tep SGF
             for item in sgf.main_sequence_iter():
                 color, move_tuple = item.get_move()
                 point = None
                 if color is not None:
+		    # Doc toa do cua hon da duoc choi 
                     if move_tuple is not None:
                         row, col = move_tuple
                         point = Point(row + 1, col + 1)
@@ -98,9 +103,12 @@ class GoDataProcessor:
                     else:
                         move = Move.pass_turn()
                     if first_move_done and point is not None:
+			# Ma hoa trang thai tro choi duoi dang feature
                         features[counter] = self.encoder.encode(game_state)
+			# Ma hoa nuoc di nhu nhan cua feature
                         labels[counter] = self.encoder.encode_point(point)
                         counter += 1
+		    # Sau do, nuoc di duoc ap dung cho ban co de tien hanh nuoc di tiep theo
                     game_state = game_state.apply_move(move)
                     first_move_done = True
 
@@ -151,7 +159,7 @@ class GoDataProcessor:
         return features, labels
 
     @staticmethod
-    def get_handicap(sgf):  # Get handicap stones
+    def get_handicap(sgf):  
         go_board = Board(19, 19)
         first_move_done = False
         move = None
@@ -160,7 +168,7 @@ class GoDataProcessor:
             for setup in sgf.get_root().get_setup_stones():
                 for move in setup:
                     row, col = move
-                    go_board.place_stone(Player.black, Point(row + 1, col + 1))  # black gets handicap
+                    go_board.place_stone(Player.black, Point(row + 1, col + 1))  
             first_move_done = True
             game_state = GameState(go_board, Player.white, None, move)
         return game_state, first_move_done
@@ -182,12 +190,12 @@ class GoDataProcessor:
                 zips_to_process.append((self.__class__, self.encoder_string, zip_name,
                                         data_file_name, indices_by_zip_name[zip_name]))
 
-        cores = multiprocessing.cpu_count()  # Determine number of CPU cores and split work load among them
+        cores = multiprocessing.cpu_count()
         pool = multiprocessing.Pool(processes=cores)
         p = pool.map_async(worker, zips_to_process)
         try:
             _ = p.get()
-        except KeyboardInterrupt:  # Caught keyboard interrupt, terminating workers
+        except KeyboardInterrupt: 
             pool.terminate()
             pool.join()
             sys.exit(-1)

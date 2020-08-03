@@ -10,60 +10,42 @@ class VGGNet:
         model = Sequential()
         inputShape = (depth, height, width)
 
-        # Block #1: (CONV => RELU) * 2 => POOL
-        model.add(Conv2D(64, (3,3), padding="same", input_shape=inputShape, data_format='channels_first'))
-        model.add(Activation("relu"))
-        model.add(Conv2D(64, (3,3), padding="same",data_format='channels_first'))
-        model.add(Activation("relu")) 
-        model.add(ZeroPadding2D(padding=2,data_format='channels_first'))
-        model.add(Dropout(0.25))
+        model.add(ZeroPadding2D((3, 3), input_shape=input_shape, data_format='channels_first'))
+	model.add(Conv2D(64, (7, 7), padding='valid', data_format='channels_first'))
+	model.add(Activation('relu'))
+	
+	model.add(ZeroPadding2D((2, 2), data_format='channels_first'))
+	model.add(Conv2D(64, (5, 5), data_format='channels_first'))
+	model.add(Activation('relu'))
 
-        # Block #2: (CONV => RELU) * 2 => POOL
-        model.add(Conv2D(128, (3,3), padding="same", data_format='channels_first'))
-        model.add(Activation("relu"))
-        model.add(Conv2D(128, (3,3), padding="same", data_format='channels_first'))
-        model.add(Activation("relu"))
-        model.add(ZeroPadding2D(padding=2,data_format='channels_first'))
-        model.add(Dropout(0.25))
+	model.add(ZeroPadding2D((2, 2), data_format='channels_first'))
+	model.add(Conv2D(64, (5, 5), data_format='channels_first'))
+	model.add(Activation('relu'))
 
-        # Block #3: (CONV => RELU) * 3 => POOL
-        model.add(Conv2D(256, (3,3), padding="same",data_format='channels_first'))
-        model.add(Activation("relu"))
-        model.add(Conv2D(256, (3,3), padding="same", data_format='channels_first'))
-        model.add(Activation("relu"))
-        model.add(Conv2D(256, (3,3), padding="same",data_format='channels_first'))
-        model.add(Activation("relu"))
-        model.add(ZeroPadding2D(padding=2, data_format='channels_first'))
-        model.add(Dropout(0.25))
+	model.add(ZeroPadding2D((2, 2), data_format='channels_first'))
+	model.add(Conv2D(48, (5, 5), data_format='channels_first'))
+	model.add(Activation('relu'))
 
-        # Block #4: (CONV => RELU) * 3 => POOL
-        model.add(Conv2D(512, (3,3), padding="same",data_format='channels_first'))
-        model.add(Activation("relu"))
-        model.add(Conv2D(512, (3,3), padding="same",data_format='channels_first'))
-        model.add(Activation("relu"))
-        model.add(Conv2D(512, (3,3), padding="same",data_format='channels_first'))
-        model.add(Activation("relu"))
-        model.add(ZeroPadding2D(padding=2, data_format='channels_first'))
-        model.add(Dropout(0.25))
+	model.add(ZeroPadding2D((2, 2), data_format='channels_first'))
+	model.add(Conv2D(48, (5, 5), data_format='channels_first'))
+	model.add(Activation('relu'))
 
-        # Block #5: (CONV => RELU) * 3 => POOL
-        model.add(Conv2D(512, (3,3), padding="same",data_format='channels_first'))
-        model.add(Activation("relu"))
-        model.add(Conv2D(512, (3,3), padding="same",data_format='channels_first'))
-        model.add(Activation("relu"))
-        model.add(Conv2D(512, (3,3), padding="same",data_format='channels_first'))
-        model.add(Activation("relu"))
-        model.add(ZeroPadding2D(padding=2, data_format='channels_first'))
-        model.add(Dropout(0.25))
+	model.add(ZeroPadding2D((2, 2), data_format='channels_first'))
+	model.add(Conv2D(32, (5, 5), data_format='channels_first'))
+	model.add(Activation('relu'))
+
+	model.add(ZeroPadding2D((2, 2), data_format='channels_first'))
+	model.add(Conv2D(32, (5, 5), data_format='channels_first'))
+	model.add(Activation('relu'))
 
         # Block #6: FC => RELU layers
         model.add(Flatten())
-        model.add(Dense(2048))
+        model.add(Dense(1024))
         model.add(Activation("relu"))
         model.add(Dropout(0.25))
 
         # Block #7: FC => RELU layers
-        model.add(Dense(1024))
+        model.add(Dense(512))
         model.add(Activation("relu"))
         model.add(Dropout(0.5))
 
